@@ -36,12 +36,3 @@ here CICD is the projectname
 ![image](https://github.com/user-attachments/assets/4486dcc4-dc2e-455d-822d-e581b66c0f67)
 
 ![image](https://github.com/user-attachments/assets/30c1045b-fe55-498e-905b-fbb986acd53e)
-
-
-
-
-
-S3_BUCKET_NAME with the name of your S3 bucket.
-
-
-
