@@ -31,11 +31,8 @@ AWS_REGION with the region where your S3 bucket is located (e.g., us-west-2).
 ![image](https://github.com/user-attachments/assets/220d8f22-b387-4b9a-baff-72b6bc1ad6ae)
 here CICD is the projectname
 
-![image](https://github.com/user-attachments/assets/16888b83-6e55-42a9-9b8f-3f45c4bfe759)
+![image](https://github.com/user-attachments/assets/518f6f78-8f07-4ca6-a635-bd40b44e73e5)
 
-![image](https://github.com/user-attachments/assets/4486dcc4-dc2e-455d-822d-e581b66c0f67)
-
-![image](https://github.com/user-attachments/assets/30c1045b-fe55-498e-905b-fbb986acd53e)
 
 #.gitlab-ci.yaml file
 stages:
@@ -76,4 +73,55 @@ deploy_to_s3:
     # Upload the JAR file to S3
     - aws s3 cp "$JAR_FILE" s3://$S3_BUCKET_NAME/
     - aws s3 sync ./src/main/java/com/example s3://$S3_BUCKET_NAME/
+
+trigger the build
+![image](https://github.com/user-attachments/assets/901d24a1-bd5a-4277-b95e-1f01181e2cbd)
+
+![image](https://github.com/user-attachments/assets/dc9bfe37-21c8-4a26-bfde-459bd0144371)
+
+![image](https://github.com/user-attachments/assets/fcc99b72-31f0-4432-b5bb-a6665f5159ed)
+
+the block user should be disable
+
+provide the bucket policy as below under the permission tab.
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::gitlab-test-lucky/*"
+        }
+    ]
+}
+
+![image](https://github.com/user-attachments/assets/bd82d322-e499-45dd-8a01-1ed403374ce2)
+
+under properties tab need to enablt the static website and upload the index.html in the bucket
+
+![image](https://github.com/user-attachments/assets/4998a0c1-4077-4274-991b-965e1b813a8c)
+
+#index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World</title>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <p>This is a simple static website hosted on Amazon S3.</p>
+	<a href="https://your-bucket-name.s3.amazonaws.com/helloworld-1.0-SNAPSHOT.jar" download>Download HelloWorld JAR</a>
+</body>
+</html>
+
+
+final output is
+![image](https://github.com/user-attachments/assets/ae881464-0e6b-4c94-a84e-4843901c5f17)
+
+
+
+
 
