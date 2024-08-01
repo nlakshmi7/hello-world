@@ -36,3 +36,44 @@ here CICD is the projectname
 ![image](https://github.com/user-attachments/assets/4486dcc4-dc2e-455d-822d-e581b66c0f67)
 
 ![image](https://github.com/user-attachments/assets/30c1045b-fe55-498e-905b-fbb986acd53e)
+
+#.gitlab-ci.yaml file
+stages:
+    - create-s3-bucket
+    - build
+    - deploy
+
+image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+
+variables:
+    S3_BUCKET_NAME: gitlab-test-lucky
+
+create-s3-bucket-job:
+  stage: create-s3-bucket
+  script:
+    - echo "Creating S3 bucket if it doesn't exist"
+    - aws s3 mb "s3://$S3_BUCKET_NAME" || echo "Bucket already exists"
+    - aws s3 ls
+
+build_job:
+    stage: build
+    image: maven:3.8.5-openjdk-17
+    script: 
+        - mvn clean package
+    artifacts:
+        paths:
+            - target/*.jar
+
+deploy_to_s3:
+  stage: deploy
+  script:
+    - echo "Listing contents of target directory:"
+    - ls -l target/
+    - echo "Deploying JAR to S3 bucket:$S3_BUCKET_NAME"
+    # Find the JAR file in the target directory
+    - JAR_FILE=$(find target -name '*.jar')
+    - echo "Deploying file:$JAR_FILE"
+    # Upload the JAR file to S3
+    - aws s3 cp "$JAR_FILE" s3://$S3_BUCKET_NAME/
+    - aws s3 sync ./src/main/java/com/example s3://$S3_BUCKET_NAME/
+
